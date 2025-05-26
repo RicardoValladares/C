@@ -9,6 +9,7 @@
 #include "handle_login.h"
 #include "handle_app.h"
 #include "whitelist.h"
+//#include "darklist.h"
 
 #define PORT 8080
 
@@ -56,8 +57,8 @@ int main() {
         // Obtener IP del cliente
         inet_ntop(AF_INET, &(client_addr.sin_addr), client_ip, INET_ADDRSTRLEN);
 
-        // Verificar whitelist
-        if (!is_ip_whitelisted(client_ip)) {
+        // Verificar whitelist              // Verificar darklist
+        if (!is_ip_whitelisted(client_ip) /*is_ip_blocked(client_ip)*/) {
             const char *forbidden =
                 "HTTP/1.1 403 Forbidden\r\n"
                 "Content-Type: text/plain\r\n"
