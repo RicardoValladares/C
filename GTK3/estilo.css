@@ -1,0 +1,36 @@
+window {
+    background-color: #1e1e1e;
+    font-family: "Segoe UI", "Sans", "Arial";
+    font-size: 14px;
+    color: #e0e0e0;
+}
+
+entry {
+    padding: 5px;
+    background-color: #2c2c2c;
+    color: #ffffff;
+    border: 1px solid #555;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #388e3c;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+button:hover {
+    background-color: #2e7d32;
+}
+
+label {
+    color: #dddddd;
+}
+
+label#resultado {
+    font-weight: bold;
+    margin-top: 10px;
+    color: #90caf9; /* azul claro */
+}
