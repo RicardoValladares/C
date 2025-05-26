@@ -65,21 +65,6 @@ void crear_interfaz() {
     g_signal_connect(boton_suma, "clicked", G_CALLBACK(on_boton_suma_clicked), NULL);
 
 
-    // Cargar estilo CSS
-    GtkCssProvider *css_provider = gtk_css_provider_new();
-    GdkDisplay *display = gdk_display_get_default();
-    GdkScreen *screen = gdk_display_get_default_screen(display);
-
-    if (gtk_css_provider_load_from_path(css_provider, "estilo.css", NULL)) {
-        gtk_style_context_add_provider_for_screen(
-            screen,
-            GTK_STYLE_PROVIDER(css_provider),
-            GTK_STYLE_PROVIDER_PRIORITY_USER
-        );
-    } else {
-        g_printerr("No se pudo cargar estilo.css\n");
-    }
-
     gtk_widget_show_all(ventana);
 }
 
