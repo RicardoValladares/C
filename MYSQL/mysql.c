@@ -6,8 +6,6 @@
 #include <unistd.h>  // Para access()
 #include <mysql/mysql.h>
 
-// gcc select_now.c -o select_now -lmysqlclient
-
 void imprimir_resultado(MYSQL_RES *res) {
     int num_fields = mysql_num_fields(res);
     MYSQL_ROW row;
