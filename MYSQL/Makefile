@@ -14,4 +14,4 @@ clean:
 	rm -f $(OUT)
 
 requeriment:
-	apt install gtk3-* libgtk-3-dev glade
+	apt install libmysqlclient-dev
