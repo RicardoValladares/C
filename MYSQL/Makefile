@@ -1,17 +1,28 @@
+# Nombre del ejecutable
+TARGET = mysql
 
-CC = gcc
-CFLAGS = -Wall -Wextra -O2
-LIBS = -lmysqlclient
-OUT = mysql
+# Archivos fuente
 SRC = mysql.c
 
-all: $(OUT)
+# Flags de compilación con pkg-config para GTK+ 3
+CFLAGS = `pkg-config --cflags mysqlclient`
+LIBS = `pkg-config --libs mysqlclient`
 
-$(OUT): $(SRC)
-	$(CC) $(CFLAGS) -o $(OUT) $(SRC) $(LIBS)
+# Directorio de interfaz
+UI_DIR = ui
+
+# Reglas
+all: $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CC) $(SRC) -o $(TARGET) $(CFLAGS) $(LIBS)
+
+run: $(TARGET)
+	./$(TARGET)
 
 clean:
-	rm -f $(OUT)
+	rm -f $(TARGET)
+
 
 requeriment:
 	apt install libmysqlclient-dev
