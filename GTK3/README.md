@@ -1,3 +1,11 @@
+Instalar dependencia en FreeBSD:
 ```
-gcc main.c interfaz.c -o suma pkg-config --cflags gtk+-3.0 pkg-config --libs gtk+-3.0
+sudo pkg install gtk3
+```
+
+Compilar:
+```
+make clena
+make
+./suma
 ```
