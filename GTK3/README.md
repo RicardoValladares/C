@@ -5,7 +5,7 @@ sudo pkg install gtk3
 
 Compilar:
 ```
-make clena
+make clean
 make
 ./suma
 ```
