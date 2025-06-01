@@ -1,3 +1,11 @@
+Instalar dependencia en FreeBSD:
 ```
-gcc mysql.c -o mysql -lmysqlclient
+sudo pkg install mysql80-client
+```
+
+Compilar:
+```
+make clean
+make
+./mysql "SELECT NOW()"
 ```
