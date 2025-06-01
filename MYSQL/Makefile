@@ -4,7 +4,7 @@ TARGET = mysql
 # Archivos fuente
 SRC = mysql.c
 
-# Flags de compilación con pkg-config para GTK+ 3
+# Flags de compilación con pkg-config para MySQL
 CFLAGS = `pkg-config --cflags mysqlclient`
 LIBS = `pkg-config --libs mysqlclient`
 
