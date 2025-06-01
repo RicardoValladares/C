@@ -1,5 +1,12 @@
+Instalar dependencia en FreeBSD:
 ```
-gcc webservice.c -o webservice
+sudo pkg install -g 'GhostBSD*-dev'
+```
+
+Compilar:
+```
+make clean
+make
 ./webservice
 ```
 
