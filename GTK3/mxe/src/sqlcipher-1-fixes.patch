@@ -1,0 +1,18 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+
+diff --git a/configure.ac b/configure.ac
+index ef21298..c77f794 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -312,7 +319,7 @@ fi
+ if test "$CYGWIN" = "yes"; then
+   BUILD_EXEEXT=.exe
+ else
+-  BUILD_EXEEXT=$EXEEXT
++  BUILD_EXEEXT=''
+ fi
+ if test x"$cross_compiling" = xno; then
+   TARGET_EXEEXT=$BUILD_EXEEXT
