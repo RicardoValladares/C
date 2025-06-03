@@ -1,0 +1,158 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Contains ad hoc patches for cross building.
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Rashad Kanavath <rashad.kanavath@c-s.fr>
+Date: Sun, 10 Jan 2016 14:04:18 +1100
+Subject: [PATCH 1/5] openscenegraph: use previously built openthreads
+
+
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 1111111..2222222 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -8,7 +8,6 @@ ENDIF()
+ 
+ #the old construct SUBDIRS( was substituted by ADD_SUBDIRECTORY that is to be preferred according on CMake docs.
+ FOREACH( mylibfolder
+-        OpenThreads
+         osg
+         osgDB
+         osgUtil
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Boris Nagaev <bnagaev@gmail.com>
+Date: Mon, 22 Feb 2016 03:35:28 +0300
+Subject: [PATCH 2/5] disable ffmpeg
+
+OpenSceneGraph is using removed features of ffmpeg, which have
+been deprecated for 3+ years.
+
+See https://github.com/mxe/mxe/issues/1230#issuecomment-186936198
+Source of patch: http://forum.openscenegraph.org/viewtopic.php?t=10485
+
+diff --git a/src/osgPlugins/CMakeLists.txt b/src/osgPlugins/CMakeLists.txt
+index 1111111..2222222 100644
+--- a/src/osgPlugins/CMakeLists.txt
++++ b/src/osgPlugins/CMakeLists.txt
+@@ -209,10 +209,6 @@ IF(OSG_CPP_EXCEPTIONS_AVAILABLE)
+     ADD_PLUGIN_DIRECTORY(txp)
+ ENDIF()
+ 
+-IF(FFMPEG_FOUND AND OSG_CPP_EXCEPTIONS_AVAILABLE)
+-    ADD_PLUGIN_DIRECTORY(ffmpeg)
+-ENDIF()
+-
+ IF(GSTREAMER_FOUND AND GLIB_FOUND)
+     ADD_PLUGIN_DIRECTORY(gstreamer)
+ ENDIF()
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Boris Pek <tehnick-8@yandex.ru>
+Date: Wed, 10 Oct 2018 00:56:37 +0300
+Subject: [PATCH 3/5] fix build with GCC < 6.x
+
+
+diff --git a/src/osgViewer/GraphicsWindowWin32.cpp b/src/osgViewer/GraphicsWindowWin32.cpp
+index 1111111..2222222 100644
+--- a/src/osgViewer/GraphicsWindowWin32.cpp
++++ b/src/osgViewer/GraphicsWindowWin32.cpp
+@@ -809,7 +809,7 @@ Win32WindowingSystem::Win32WindowingSystem()
+ 	if (hModuleShore) {
+ 		setProcessDpiAwareness = (SetProcessDpiAwarenessFunc *) GetProcAddress(hModuleShore, "SetProcessDpiAwareness");
+ 		if (setProcessDpiAwareness) {
+-			(*setProcessDpiAwareness)(PROCESS_DPI_AWARENESS::PROCESS_PER_MONITOR_DPI_AWARE);
++			(*setProcessDpiAwareness)(PROCESS_PER_MONITOR_DPI_AWARE);
+ 		}
+ 	}
+ // #endif
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Boris Pek <tehnick-8@yandex.ru>
+Date: Wed, 10 Oct 2018 01:48:22 +0300
+Subject: [PATCH 4/5] fix build of gta plugin when pkg-config is used + update
+ related variable for build without pkg-config.
+
+
+diff --git a/CMakeModules/FindGTA.cmake b/CMakeModules/FindGTA.cmake
+index 1111111..2222222 100644
+--- a/CMakeModules/FindGTA.cmake
++++ b/CMakeModules/FindGTA.cmake
+@@ -33,7 +33,7 @@ IF(NOT GTA_FOUND)
+         /usr/freeware/include
+     )
+     
+-    FIND_LIBRARY(GTA_LIBRARY
++    FIND_LIBRARY(GTA_LIBRARIES
+         NAMES gta libgta
+         PATHS
+         $ENV{GTA_DIR}/lib
+@@ -50,8 +50,8 @@ IF(NOT GTA_FOUND)
+     )
+     
+     SET(GTA_FOUND "NO")
+-    IF(GTA_LIBRARY AND GTA_INCLUDE_DIRS)
++    IF(GTA_LIBRARIES AND GTA_INCLUDE_DIRS)
+         SET(GTA_FOUND "YES")
+-    ENDIF(GTA_LIBRARY AND GTA_INCLUDE_DIRS)
++    ENDIF(GTA_LIBRARIES AND GTA_INCLUDE_DIRS)
+ 
+ ENDIF(NOT GTA_FOUND)
+\ No newline at end of file
+diff --git a/src/osg/DisplaySettings.cpp b/src/osg/DisplaySettings.cpp
+index 1111111..2222222 100644
+--- a/src/osg/DisplaySettings.cpp
++++ b/src/osg/DisplaySettings.cpp
+@@ -22,9 +22,6 @@
+ #include <algorithm>
+ #include <string.h>
+ 
+-using namespace osg;
+-using namespace std;
+-
+ #if defined(WIN32) && !defined(__CYGWIN__)
+ #include<windows.h>
+ extern "C" { OSG_EXPORT DWORD NvOptimusEnablement=0x00000001; }
+@@ -32,6 +29,9 @@ extern "C" { OSG_EXPORT DWORD NvOptimusEnablement=0x00000001; }
+ extern "C" { int NvOptimusEnablement=0x00000001; }
+ #endif
+ 
++using namespace osg;
++using namespace std;
++
+ void DisplaySettings::setNvOptimusEnablement(int value)
+ {
+     NvOptimusEnablement = value;
+diff --git a/src/osgPlugins/gta/CMakeLists.txt b/src/osgPlugins/gta/CMakeLists.txt
+index 1111111..2222222 100644
+--- a/src/osgPlugins/gta/CMakeLists.txt
++++ b/src/osgPlugins/gta/CMakeLists.txt
+@@ -2,7 +2,7 @@ INCLUDE_DIRECTORIES( ${GTA_INCLUDE_DIRS} )
+ 
+ SET(TARGET_SRC ReaderWriterGTA.cpp )
+ 
+-SET(TARGET_LIBRARIES_VARS GTA_LIBRARY)
++SET(TARGET_LIBRARIES_VARS GTA_LIBRARIES)
+ 
+ #### end var setup  ###
+ SETUP_PLUGIN(gta)
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: brodieG <brodieG@users.noreply.github.com>
+Date: Thu, 10 Nov 2022 01:29:08 +0000
+Subject: [PATCH 5/5] add tiff lib dependency
+
+
+diff --git a/src/osgPlugins/tiff/CMakeLists.txt b/src/osgPlugins/tiff/CMakeLists.txt
+index 1111111..2222222 100644
+--- a/src/osgPlugins/tiff/CMakeLists.txt
++++ b/src/osgPlugins/tiff/CMakeLists.txt
+@@ -4,5 +4,7 @@ SET(TARGET_SRC ReaderWriterTIFF.cpp )
+ 
+ SET(TARGET_LIBRARIES_VARS TIFF_LIBRARY)
+ 
++SET(TARGET_EXTERNAL_LIBRARIES tiff)
++
+ #### end var setup  ###
+ SETUP_PLUGIN(tiff)
