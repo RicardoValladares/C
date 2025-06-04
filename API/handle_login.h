@@ -1,4 +1,10 @@
-#include <unistd.h>
+#ifdef _WIN32
+    #include <winsock2.h>
+    #define sock_write(sock, buf, len) send((sock), (buf), (len), 0)
+#else
+    #include <unistd.h>
+    #define sock_write(sock, buf, len) write((sock), (buf), (len))
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,7 +62,7 @@ int handle_login(int client_sock, const char *buffer, const char *client_ip) {
             "HTTP/1.1 401 Unauthorized\r\n"
             "WWW-Authenticate: Basic realm=\"Login\"\r\n"
             "Content-Length: 0\r\n\r\n";
-        write(client_sock, unauth, strlen(unauth));
+        sock_write(client_sock, unauth, strlen(unauth));
         printf("Intento de login fallido (sin credenciales) desde IP: %s\n", client_ip);
         return -1;
     }
@@ -75,7 +81,7 @@ int handle_login(int client_sock, const char *buffer, const char *client_ip) {
         const char *unauth =
             "HTTP/1.1 403 Forbidden\r\n"
             "Content-Length: 0\r\n\r\n";
-        write(client_sock, unauth, strlen(unauth));
+        sock_write(client_sock, unauth, strlen(unauth));
         printf("Intento de login fallido (credenciales incorrectas) desde IP: %s\n", client_ip);
         return -1;
     }
@@ -88,12 +94,15 @@ int handle_login(int client_sock, const char *buffer, const char *client_ip) {
     snprintf(json, sizeof(json), "{\"token\": \"%s\"}", current_token);
 
     char response[512];
+    int content_length = strlen(json);
     snprintf(response, sizeof(response),
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: application/json\r\n"
-        "Content-Length: %lu\r\n\r\n%s",
-        strlen(json), json);
-    write(client_sock, response, strlen(response));
+        "Content-Length: %d\r\n"
+        "Connection: close\r\n\r\n"  // Añadido para mejor manejo de conexión
+        "%s", content_length, json);
+
+    sock_write(client_sock, response, strlen(response));
     
     printf("Login exitoso desde IP: %s. Token generado: %s\n", client_ip, current_token);
     return 0;
