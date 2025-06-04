@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     const char *fallback_user = "root";
     const char *fallback_pass = "123456";
     const char *fallback_db   = "mysql";
-    const char *fallback_host = "192.100.1.210";
+    const char *fallback_host = "127.0.0.1";
 
     MYSQL *conn = mysql_init(NULL);
     if (!conn) {
