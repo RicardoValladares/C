@@ -21,7 +21,7 @@ all: $(TARGET)
 $(TARGET): $(SRC)
 	$(CC) $(SRC) -o $(TARGET) $(CFLAGS) $(LIBS)
 	@if [ ! -f "$(MXE_COMPILER)" ]; then \
-        cd mxe && make gtk3 -j 8 MXE_TARGETS='x86_64-w64-mingw32.static' cd ..; \
+        cd mxe && make gtk3 -j 8 MXE_TARGETS='x86_64-w64-mingw32.static' && cd ..; \
         exit 1; \
     fi
 	$(MXE_COMPILER) -o $(TARGETWIN) $(SRC) $(MXE_CFLAGS)
