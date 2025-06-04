@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     const char *fallback_user = "root";
     const char *fallback_pass = "123456";
     const char *fallback_db   = "mysql";
-    const char *fallback_host = "127.0.0.1";
+    const char *fallback_host = "192.100.1.210";
 
     MYSQL *conn = mysql_init(NULL);
     if (!conn) {
@@ -56,8 +56,8 @@ int main(int argc, char *argv[]) {
     int conectado = 0;
 
     // Intento 1: configuración por archivo .cnf
-    if (access("db_config.cnf", R_OK) == 0) {
-        mysql_options(conn, MYSQL_READ_DEFAULT_FILE, "db_config.cnf");
+    if (access("./db_config.cnf", R_OK) == 0) {
+        mysql_options(conn, MYSQL_READ_DEFAULT_FILE, "./db_config.cnf");
         mysql_options(conn, MYSQL_READ_DEFAULT_GROUP, "client");
 
         if (mysql_real_connect(conn, NULL, NULL, NULL, NULL, 0, NULL, 0)) {
