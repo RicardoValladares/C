@@ -3,3 +3,12 @@ user = root
 password = 123456
 host = 127.0.0.1
 database = mysql
+
+# Use this to disable SSL (not recommended for production)
+ssl-mode = DISABLED
+
+# For SSL connections, use the following:
+# ssl-mode = REQUIRED
+# ssl-ca = /path/to/ca.pem
+# ssl-cert = /path/to/client-cert.pem
+# ssl-key = /path/to/client-key.pem
