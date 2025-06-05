@@ -16,17 +16,19 @@ MXE_COMPILER = ./mxe/usr/bin/x86_64-w64-mingw32.static-gcc
 MXE_CFLAGS = `./mxe/usr/bin/x86_64-w64-mingw32.static-pkg-config --cflags --libs gtk+-3.0`
 
 # Reglas
-all: $(TARGET)
+all: $(TARGET) winbuild
 
 $(TARGET): $(SRC)
 	$(CC) $(SRC) -o $(TARGET) $(CFLAGS) $(LIBS)
-	@if [ ! -f "$(MXE_COMPILER)" ]; then \
-        cd mxe && make gtk3 -j 8 MXE_TARGETS='x86_64-w64-mingw32.static' && cd ..; \
-        exit 1; \
-    fi
-	$(MXE_COMPILER) -o $(TARGETWIN) $(SRC) $(MXE_CFLAGS)
+	
 
-run: $(TARGET)
+winbuild:
+	@if [ ! -f "$(MXE_COMPILER)" ] && [ "$(shell uname)" = "Linux" ]; then \
+		cd mxe && make gtk3 -j 8 MXE_TARGETS='x86_64-w64-mingw32.static' && cd .. && $(MXE_COMPILER) -o $(TARGETWIN) $(SRC) $(MXE_CFLAGS); \
+		exit 1; \
+	fi	
+
+run:
 	./$(TARGET)
 
 clean:
